@@ -56,6 +56,7 @@ parser = ["query"]
 query = ["def"]
 writer = ["def"]
 planetscale = []
+sync = []
 probe = ["query"]
 sqlx-dep = ["sqlx"]
 sqlx-all = ["sqlx-mysql", "sqlx-postgres", "sqlx-sqlite"]
@@ -113,6 +114,7 @@ runtime-tokio-rustls = [
     "sqlx?/runtime-tokio-rustls",
     "sea-query-sqlx?/runtime-tokio-rustls",
 ]
+rusqlite = []
 with-serde = ["serde"]
 
 # This allows us to develop using a local version of sea-query

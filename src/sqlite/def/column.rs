@@ -25,7 +25,8 @@ impl ColumnInfo {
         let row = row.sqlite();
         let col_not_null: i8 = row.get(3);
         let is_pk: i8 = row.get(5);
-        let default_value: &str = row.get(4);
+        let default_value: Option<String> = row.get(4);
+        let default_value = default_value.unwrap_or_default();
         Ok(ColumnInfo {
             cid: row.get(0),
             name: row.get(1),
@@ -219,16 +220,16 @@ impl From<SqlxRow> for ForeignKeysInfo {
             from: vec![row.get(3)],
             to: vec![row.get(4)],
             on_update: {
-                let op: &str = row.get(5);
-                op.into()
+                let op: String = row.get(5);
+                op.as_str().into()
             },
             on_delete: {
-                let op: &str = row.get(6);
-                op.into()
+                let op: String = row.get(6);
+                op.as_str().into()
             },
             r#match: {
-                let op: &str = row.get(7);
-                op.into()
+                let op: String = row.get(7);
+                op.as_str().into()
             },
         }
     }

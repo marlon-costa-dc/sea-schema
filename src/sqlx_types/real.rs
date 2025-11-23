@@ -46,3 +46,14 @@ impl SqlxRow {
         }
     }
 }
+
+#[cfg(feature = "sqlx-sqlite")]
+pub async fn connect_sqlite(s: &str) -> Result<SqlitePool, SqlxError> {
+    SqlitePool::connect(s).await
+}
+
+#[cfg(feature = "sqlx-sqlite")]
+pub async fn execute_sqlite(pool: &SqlitePool, sql: &str) -> Result<(), SqlxError> {
+    sqlx::query(sql).execute(pool).await?;
+    Ok(())
+}

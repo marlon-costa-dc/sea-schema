@@ -1,7 +1,8 @@
 use sea_query::{ColumnType, StringLen};
 use std::num::ParseIntError;
 
-pub fn parse_type(data_type: &str) -> Result<ColumnType, ParseIntError> {
+pub fn parse_type(data_type: String) -> Result<ColumnType, ParseIntError> {
+    let data_type = data_type.as_str();
     let mut type_name = data_type;
     let mut parts: Vec<u32> = Vec::new();
     if let Some((prefix, suffix)) = data_type.split_once('(') {

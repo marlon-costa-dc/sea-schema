@@ -1,9 +1,14 @@
-#[cfg(feature = "sqlx-sqlite")]
+#[cfg(feature = "rusqlite")]
+mod rusqlite;
+#[cfg(feature = "rusqlite")]
+pub use rusqlite::*;
+
+#[cfg(all(feature = "sqlx-sqlite"))]
 mod real;
-#[cfg(feature = "sqlx-sqlite")]
+#[cfg(all(feature = "sqlx-sqlite"))]
 pub use real::*;
 
-#[cfg(not(feature = "sqlx-sqlite"))]
+#[cfg(all(not(feature = "rusqlite"), not(feature = "sqlx-sqlite")))]
 mod mock;
-#[cfg(not(feature = "sqlx-sqlite"))]
+#[cfg(all(not(feature = "rusqlite"), not(feature = "sqlx-sqlite")))]
 pub use mock::*;

@@ -15,6 +15,8 @@ pub mod sqlite;
 pub use sea_query;
 
 pub(crate) mod parser;
+
+#[cfg(not(feature = "sync"))]
 pub mod sqlx_types;
 pub(crate) mod util;
 

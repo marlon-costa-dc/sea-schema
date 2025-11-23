@@ -1,15 +1,16 @@
 use pretty_assertions::assert_eq;
-use sqlx::SqlitePool;
-use sqlx::sqlite::SqlitePoolOptions;
 use std::collections::HashMap;
 
 use sea_schema::sea_query::{
     ColumnDef, Expr, ForeignKey, ForeignKeyAction, ForeignKeyCreateStatement, Index, Query,
     SqliteQueryBuilder, Table, TableCreateStatement, TableName, TableRef,
 };
-use sea_schema::sqlite::{
-    def::TableDef,
-    discovery::{DiscoveryResult, SchemaDiscovery},
+use sea_schema::{
+    sqlite::{
+        def::TableDef,
+        discovery::{DiscoveryResult, SchemaDiscovery},
+    },
+    sqlx_types::{connect_sqlite, execute_sqlite},
 };
 
 #[cfg_attr(test, async_std::test)]
@@ -29,21 +30,18 @@ async fn main() -> DiscoveryResult<()> {
 async fn test_001() -> DiscoveryResult<()> {
     let url = std::env::var("DATABASE_URL_LIVE").unwrap_or_else(|_| "sqlite::memory:".to_owned());
 
-    let sqlite_pool = SqlitePoolOptions::new().connect(&url).await.unwrap();
+    let pool = connect_sqlite(&url).await.unwrap();
 
     //DROP TABLES to ensure all tests pass
-    sqlx::query("DROP TABLE IF EXISTS Programming_Langs")
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, "DROP TABLE IF EXISTS Programming_Langs")
         .await
         .unwrap();
 
-    sqlx::query("DROP TABLE IF EXISTS suppliers")
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, "DROP TABLE IF EXISTS suppliers")
         .await
         .unwrap();
 
-    sqlx::query("DROP TABLE IF EXISTS supplier_groups")
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, "DROP TABLE IF EXISTS supplier_groups")
         .await
         .unwrap();
 
@@ -99,18 +97,15 @@ async fn test_001() -> DiscoveryResult<()> {
         .to_owned();
 
     //DROP TABLES to ensure all tests pass
-    sqlx::query("DROP TABLE IF EXISTS Programming_Langs")
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, "DROP TABLE IF EXISTS Programming_Langs")
         .await
         .unwrap();
 
-    sqlx::query("DROP TABLE IF EXISTS suppliers")
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, "DROP TABLE IF EXISTS suppliers")
         .await
         .unwrap();
 
-    sqlx::query("DROP TABLE IF EXISTS supplier_groups")
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, "DROP TABLE IF EXISTS supplier_groups")
         .await
         .unwrap();
 
@@ -159,47 +154,45 @@ async fn test_001() -> DiscoveryResult<()> {
         .unwrap()
         .to_owned();
 
-    sqlx::query(&create_table.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, &create_table.to_string(SqliteQueryBuilder))
         .await
         .unwrap();
 
-    sqlx::query(&create_table_inventors.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, &create_table_inventors.to_string(SqliteQueryBuilder))
         .await
         .unwrap();
 
-    sqlx::query(&insert_into_table.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, &insert_into_table.to_string(SqliteQueryBuilder))
         .await
         .unwrap();
 
-    sqlx::query(&table_create_supplier_groups.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(
+        &pool,
+        &table_create_supplier_groups.to_string(SqliteQueryBuilder),
+    )
+    .await
+    .unwrap();
+
+    execute_sqlite(&pool, &table_create_suppliers.to_string(SqliteQueryBuilder))
         .await
         .unwrap();
 
-    sqlx::query(&table_create_suppliers.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(
+        &pool,
+        &insert_into_supplier_groups.to_string(SqliteQueryBuilder),
+    )
+    .await
+    .unwrap();
+
+    execute_sqlite(&pool, &insert_into_suppliers.to_string(SqliteQueryBuilder))
         .await
         .unwrap();
 
-    sqlx::query(&insert_into_supplier_groups.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
+    execute_sqlite(&pool, &create_index.to_string(SqliteQueryBuilder))
         .await
         .unwrap();
 
-    sqlx::query(&insert_into_suppliers.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
-        .await
-        .unwrap();
-
-    sqlx::query(&create_index.to_string(SqliteQueryBuilder))
-        .fetch_all(&mut *sqlite_pool.acquire().await.unwrap())
-        .await
-        .unwrap();
-
-    let schema = SchemaDiscovery::new(sqlite_pool.clone()).discover().await?;
+    let schema = SchemaDiscovery::new(pool).discover().await?;
 
     let expected_sql = [
         create_table.to_string(SqliteQueryBuilder),
@@ -238,8 +231,7 @@ async fn test_001() -> DiscoveryResult<()> {
 async fn test_002() -> DiscoveryResult<()> {
     let url = std::env::var("DATABASE_URL_LIVE").unwrap_or_else(|_| "sqlite::memory:".to_owned());
 
-    let connection = SqlitePool::connect(&url).await.unwrap();
-    let mut executor = connection.acquire().await.unwrap();
+    let connection = connect_sqlite(&url).await.unwrap();
 
     let tbl_create_stmts = vec![
         create_bakery_table(),
@@ -256,7 +248,7 @@ async fn test_002() -> DiscoveryResult<()> {
 
     for tbl_create_stmt in tbl_create_stmts.iter() {
         let sql = tbl_create_stmt.to_string(SqliteQueryBuilder);
-        sqlx::query(&sql).execute(&mut *executor).await.unwrap();
+        execute_sqlite(&connection, &sql).await.unwrap();
     }
 
     let schema_discovery = SchemaDiscovery::new(connection);
