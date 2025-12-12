@@ -28,7 +28,6 @@ name = "sea_schema"
 path = "src/lib.rs"
 
 [dependencies]
-async-trait = { version = "0.1", default-features = false }
 sea-schema-derive = { version = "0.3.0", path = "../sea-schema-derive", default-features = false }
 sea-query = { version = "1.0.0-rc.18", default-features = false, features = ["derive"] }
 sea-query-rusqlite = { version = "0.8.0-rc.11", optional = true }
@@ -54,7 +53,7 @@ sqlx-dep = []
 sqlx-mysql = []
 sqlx-postgres = []
 sqlx-sqlite = []
-rusqlite = ["sea-query-rusqlite"]
+rusqlite = ["sqlite", "sea-query-rusqlite"]
 with-serde = ["serde"]
 
 # This allows us to develop using a local version of sea-query
