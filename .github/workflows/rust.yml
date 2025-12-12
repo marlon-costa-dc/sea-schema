@@ -111,9 +111,13 @@ jobs:
             ~/.cargo/git
             Cargo.lock
             target
+            sea-schema-sync/Cargo.lock
+            sea-schema-sync/target
           key: ${{ github.sha }}-${{ github.run_id }}-${{ runner.os }}-sqlite-${{ matrix.project }}
       - run: cargo build --manifest-path tests/${{ matrix.project }}/Cargo.toml
+      - run: cargo build --manifest-path sea-schema-sync/tests/${{ matrix.project }}/Cargo.toml
       - run: cargo test --manifest-path tests/${{ matrix.project }}/Cargo.toml --no-run
+      - run: cargo test --manifest-path sea-schema-sync/tests/${{ matrix.project }}/Cargo.toml --no-run
 
   mysql:
     name: MySQL
@@ -279,6 +283,10 @@ jobs:
             ~/.cargo/git
             Cargo.lock
             target
+            sea-schema-sync/Cargo.lock
+            sea-schema-sync/target
           key: ${{ github.sha }}-${{ github.run_id }}-${{ runner.os }}-sqlite-${{ matrix.project }}
       - run: cargo run --manifest-path tests/${{ matrix.project }}/Cargo.toml
+      - run: cargo run --manifest-path sea-schema-sync/tests/${{ matrix.project }}/Cargo.toml
       - run: cargo test --manifest-path tests/${{ matrix.project }}/Cargo.toml
+      - run: cargo test --manifest-path sea-schema-sync/tests/${{ matrix.project }}/Cargo.toml

@@ -18,6 +18,10 @@ pub(crate) mod parser;
 
 #[cfg(not(feature = "sync"))]
 pub mod sqlx_types;
+
+#[cfg(feature = "sync")]
+pub mod rusqlite_types;
+
 pub(crate) mod util;
 
 pub mod name;
