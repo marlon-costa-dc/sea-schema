@@ -1,0 +1,39 @@
+src/sqlite/executor/real.rs
+  s_64c182eb86dc9e::t_74f5e8e11978d3 41
+  s_64c182eb86dc9e::t_5f705637af2516 30
+src/postgres/discovery/executor/real.rs
+  s_64c182eb86dc9e::t_5f705637af2516 30
+  s_64c182eb86dc9e::t_74f5e8e11978d3 41
+src/mysql/discovery/executor/real.rs
+  s_64c182eb86dc9e::t_74f5e8e11978d3 58
+  s_64c182eb86dc9e::t_5f705637af2516 47
+src/sqlx_types/real.rs
+  s_64c182eb86dc9e::t_74f5e8e11978d3 57
+Cargo.toml
+  s_f1e46703a06425::t_40efc52464f4ef 128-130
+  s_f1e46703a06425::t_b9f0f581e7d7f4 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "60ddf8b12634d04955b908c03f5900412a47f5c0",
+  "prompts": {},
+  "sessions": {
+    "s_64c182eb86dc9e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019e9a50-f152-74c2-bc71-2f973915b762",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Zed <hi@zed.dev>"
+    },
+    "s_f1e46703a06425": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019e9a51-a958-7913-a420-730183a6b10f",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Zed <hi@zed.dev>"
+    }
+  }
+}
