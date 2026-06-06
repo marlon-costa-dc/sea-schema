@@ -37,7 +37,7 @@ path = "src/lib.rs"
 [dependencies]
 async-trait = { version = "0.1", default-features = false }
 sea-schema-derive = { version = "0.3.0", path = "sea-schema-derive", default-features = false }
-sea-query = { version = "1.0.0", default-features = false, features = ["derive"] }
+sea-query = { version = "=1.0.0", default-features = false, features = ["derive"] }
 sea-query-sqlx = { version = "0.8", default-features = false, optional = true }
 serde = { version = "1", default-features = false, optional = true, features = ["derive"] }
 sqlx = { version = "0.8.4", default-features = false, optional = true }
@@ -125,5 +125,6 @@ with-serde = ["serde"]
 
 # This allows us to develop using a local version of sea-query
 [patch.crates-io]
-# sea-query = { path = "../sea-query" }
-# sea-query = { git = "https://github.com/SeaQL/sea-query", branch = "master" }
+sea-query = { git = "https://github.com/marlon-costa-dc/sea-query.git", tag = "1.0.0-dc.2" }
+sea-query-derive = { git = "https://github.com/marlon-costa-dc/sea-query.git", tag = "1.0.0-dc.2" }
+sea-query-sqlx = { git = "https://github.com/marlon-costa-dc/sea-query.git", tag = "1.0.0-dc.2" }
